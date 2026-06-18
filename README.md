@@ -13,6 +13,11 @@ The cooler block (with the two coolant tubes) sits on the CPU; the screen does
 **not** measure temperature itself — the host reads sensors and pushes the
 values, and the screen's firmware renders them.
 
+<p align="center">
+  <img src="docs/img/widget.gif" width="320" alt="Poseidon Vistek desktop widget — live CPU temp, power and animated fans" />
+  <br><i>The desktop widget: live CPU temp, power, and both fan speeds with animated fans.</i>
+</p>
+
 ## What it shows
 
 CPU temperature, CPU load %, CPU clock, CPU power (W), and one fan/pump RPM.
