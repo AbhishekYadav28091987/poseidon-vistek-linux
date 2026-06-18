@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Poseidon Vistek — Linux Driver</title>
+<meta name="description" content="Open-source Linux driver and desktop widget for the COUGAR Poseidon Vistek ARGB AIO cooler LCD. Shows CPU temp, power and fan speeds.">
+<style>
+  :root{
+    --bg:#070912; --card:#10141f; --edge:#1d2438; --text:#e8eef8; --muted:#8b98b3;
+    --cyan:#38bdf8;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"DejaVu Sans",sans-serif;line-height:1.6;overflow-x:hidden}
+  a{color:var(--cyan);text-decoration:none}
+  a:hover{text-decoration:underline}
+  .wrap{max-width:980px;margin:0 auto;padding:0 22px}
+
+  /* animated RGB background accents */
+  @keyframes rgbshift{0%{filter:hue-rotate(0deg)}100%{filter:hue-rotate(360deg)}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+  .hero{position:relative;text-align:center;padding:90px 0 60px}
+  .glow{position:absolute;inset:-40% 0 auto 0;height:600px;z-index:0;
+    background:radial-gradient(closest-side,rgba(56,189,248,.18),transparent 70%),
+               conic-gradient(from 0deg,#f43f5e,#f59e0b,#22c55e,#38bdf8,#a855f7,#f43f5e);
+    opacity:.16;filter:blur(70px);animation:rgbshift 14s linear infinite;pointer-events:none}
+  .hero>*{position:relative;z-index:1}
+  .fan{width:96px;height:96px;margin:0 auto 18px;animation:float 5s ease-in-out infinite}
+  .fan svg{animation:spin 6s linear infinite;display:block}
+  h1{font-size:clamp(34px,6vw,60px);font-weight:800;letter-spacing:-.02em;
+    background:linear-gradient(90deg,#f43f5e,#f59e0b,#22c55e,#38bdf8,#a855f7,#f43f5e);
+    background-size:300% auto;-webkit-background-clip:text;background-clip:text;
+    -webkit-text-fill-color:transparent;animation:rgbshift 8s linear infinite}
+  .tag{color:var(--muted);font-size:clamp(15px,2.4vw,20px);margin-top:8px}
+  .badges{margin-top:18px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+  .badge{background:var(--card);border:1px solid var(--edge);border-radius:999px;
+    padding:6px 14px;font-size:13px;color:var(--muted)}
+  .cta{margin-top:28px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn{display:inline-block;padding:12px 22px;border-radius:12px;font-weight:700;border:1px solid var(--edge)}
+  .btn.primary{background:linear-gradient(90deg,#38bdf8,#a855f7);color:#06121f;border:0}
+  .btn.ghost{background:var(--card);color:var(--text)}
+
+  section{padding:46px 0;border-top:1px solid var(--edge)}
+  h2{font-size:26px;margin-bottom:18px;display:flex;align-items:center;gap:10px}
+  h2 .dot{width:10px;height:10px;border-radius:50%;
+    background:linear-gradient(90deg,#38bdf8,#a855f7)}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+  .feat{background:var(--card);border:1px solid var(--edge);border-radius:14px;padding:18px}
+  .feat h3{font-size:16px;margin-bottom:6px}
+  .feat p{color:var(--muted);font-size:14px}
+  pre{background:#0a0e18;border:1px solid var(--edge);border-radius:12px;padding:16px;
+    overflow:auto;font-size:13.5px;color:#cfe3ff}
+  code{font-family:ui-monospace,"DejaVu Sans Mono",monospace}
+  .step{color:var(--muted);font-size:14px;margin:14px 0 6px}
+
+  .panel{background:linear-gradient(180deg,var(--card),#0c1019);border:1px solid var(--edge);
+    border-radius:18px;padding:26px;text-align:center}
+  .upi{font-size:22px;font-weight:800;letter-spacing:.02em;
+    background:linear-gradient(90deg,#22c55e,#38bdf8);-webkit-background-clip:text;
+    background-clip:text;-webkit-text-fill-color:transparent;user-select:all}
+  .phone{font-size:24px;font-weight:800;color:var(--text);user-select:all}
+  .hint{color:var(--muted);font-size:14px;margin-top:6px}
+  .two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:680px){.two{grid-template-columns:1fr}}
+  footer{padding:40px 0;color:var(--muted);font-size:13px;text-align:center;border-top:1px solid var(--edge)}
+  .disclaim{color:#6b7790;font-size:12px;max-width:720px;margin:14px auto 0}
+</style>
+</head>
+<body>
+<div class="hero">
+  <div class="glow"></div>
+  <div class="wrap">
+    <div class="fan">
+      <svg width="96" height="96" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="128" cy="128" r="92" fill="none" stroke="#1f2738" stroke-width="6"/>
+        <g fill="#38bdf8" transform="translate(128,128)">
+          <g id="b"><path d="M0,-14 C24,-30 60,-22 70,2 C46,-6 22,-6 0,-2 Z"/></g>
+          <use href="#b" transform="rotate(51.4)"/><use href="#b" transform="rotate(102.8)"/>
+          <use href="#b" transform="rotate(154.2)"/><use href="#b" transform="rotate(205.6)"/>
+          <use href="#b" transform="rotate(257)"/><use href="#b" transform="rotate(308.4)"/>
+          <circle r="18" fill="#0b0e14" stroke="#38bdf8" stroke-width="5"/>
+        </g>
+      </svg>
+    </div>
+    <h1>Poseidon Vistek — Linux Driver</h1>
+    <p class="tag">Bring your COUGAR Poseidon Vistek ARGB cooler's LCD to life on Linux —
+       CPU temperature, power and fan speeds, plus an animated desktop widget.</p>
+    <div class="badges">
+      <span class="badge">USB 2c65:1000</span>
+      <span class="badge">.deb &amp; .tar.gz</span>
+      <span class="badge">systemd service</span>
+      <span class="badge">MIT licensed</span>
+    </div>
+    <div class="cta">
+      <a class="btn primary" href="https://github.com/AbhishekYadav28091987/poseidon-vistek-linux">⭐ View on GitHub</a>
+      <a class="btn ghost" href="#install">⬇ Install</a>
+      <a class="btn ghost" href="#donate">💜 Donate</a>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section id="features">
+    <h2><span class="dot"></span>What it does</h2>
+    <div class="grid">
+      <div class="feat"><h3>🌡️ Live on the LCD</h3><p>Streams CPU temperature, load, clock, power (W) and fan/pump RPM to the cooler's 1.9" screen.</p></div>
+      <div class="feat"><h3>🪟 Desktop widget</h3><p>Always-on-top panel mirroring the screen, with two fans that spin at your real RPM.</p></div>
+      <div class="feat"><h3>⚙️ Auto-start</h3><p>systemd service feeds the panel at 2&nbsp;Hz and survives reboots; widget auto-starts on login.</p></div>
+      <div class="feat"><h3>🧊 Pump &amp; fan</h3><p>Reads CPU temp (k10temp), power (RAPL) and fan/pump RPM (nct6687) — no vendor software.</p></div>
+      <div class="feat"><h3>📦 Easy install</h3><p>One-click <code>.deb</code> for Ubuntu/Debian, or a portable tarball for any distro.</p></div>
+      <div class="feat"><h3>🌈 RGB roadmap</h3><p>The lighting/color command (0x05) is documented; ARGB control is planned next.</p></div>
+    </div>
+  </section>
+
+  <section id="install">
+    <h2><span class="dot"></span>Install</h2>
+    <p class="step">Debian / Ubuntu / Mint / Pop!_OS:</p>
+<pre><code>sudo apt install ./vistek-display_1.0.0_all.deb</code></pre>
+    <p class="step">Any other distribution (tarball):</p>
+<pre><code>tar xzf vistek-display-1.0.0.tar.gz
+cd vistek-display-1.0.0 &amp;&amp; sudo ./install.sh</code></pre>
+    <p class="step">Then open <b>“Poseidon Vistek Monitor”</b> from your app menu, or run <code>vistek-widget</code>.</p>
+  </section>
+
+  <section id="donate">
+    <h2><span class="dot"></span>Support this project</h2>
+    <div class="two">
+      <div class="panel">
+        <div style="font-size:30px">💜</div>
+        <h3 style="margin:6px 0">Donate via UPI</h3>
+        <p class="hint">If this saved you from booting Windows, a small tip keeps the drivers coming.</p>
+        <p class="upi" style="margin-top:14px">9450909077@upi</p>
+        <p class="hint">Tap &amp; pay with any UPI app (GPay / PhonePe / Paytm)</p>
+      </div>
+      <div class="panel">
+        <div style="font-size:30px">🛠️</div>
+        <h3 style="margin:6px 0">Need a Linux driver or software?</h3>
+        <p class="hint">Custom Linux drivers for unsupported hardware, or any software — get in touch.</p>
+        <p class="phone" style="margin-top:14px">📞 9898327666</p>
+        <p class="hint">Call / WhatsApp for custom driver &amp; software development</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="dot"></span>How it works</h2>
+    <p style="color:var(--muted);font-size:15px">
+      The screen is a USB-HID display (<code>2c65:1000</code>). The driver sends 64-byte
+      command-<code>0x02</code> reports carrying the sensor values; the cooler's firmware
+      renders them. The panel has a watchdog, so the daemon feeds it continuously at 2&nbsp;Hz.
+      Full protocol notes are in the repository README. This is an independent,
+      interoperability-focused project — it ships <b>no</b> vendor software or binaries.
+    </p>
+  </section>
+
+</div>
+
+<footer>
+  Made with 💙 for the Linux community · MIT licensed ·
+  <a href="https://github.com/AbhishekYadav28091987/poseidon-vistek-linux">github.com/AbhishekYadav28091987/poseidon-vistek-linux</a>
+  <p class="disclaim">Not affiliated with or endorsed by COUGAR / PCCOOLER. All trademarks
+  belong to their respective owners. Use at your own risk.</p>
+</footer>
+</body>
+</html>

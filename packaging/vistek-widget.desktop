@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=Poseidon Vistek Monitor
+GenericName=CPU Cooler Monitor
+Comment=Live CPU temp, power and fan speeds with animated fans
+Exec=vistek-widget
+Icon=vistek
+Terminal=false
+Categories=Utility;Monitor;
+Keywords=cpu;temperature;fan;cooler;aio;poseidon;vistek;sensor;widget;
+StartupNotify=false

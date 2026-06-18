@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="g" cx="50%" cy="42%" r="65%">
+      <stop offset="0%" stop-color="#1b2333"/>
+      <stop offset="100%" stop-color="#0b0e14"/>
+    </radialGradient>
+  </defs>
+  <rect x="8" y="8" width="240" height="240" rx="48" fill="url(#g)" stroke="#1f2738" stroke-width="4"/>
+  <circle cx="128" cy="128" r="92" fill="none" stroke="#1f2738" stroke-width="6"/>
+  <!-- fan blades -->
+  <g fill="#38bdf8" transform="translate(128,128)">
+    <g id="b">
+      <path d="M0,-14 C24,-30 60,-22 70,2 C46,-6 22,-6 0,-2 Z"/>
+    </g>
+    <use href="#b" transform="rotate(51.4)"/>
+    <use href="#b" transform="rotate(102.8)"/>
+    <use href="#b" transform="rotate(154.2)"/>
+    <use href="#b" transform="rotate(205.6)"/>
+    <use href="#b" transform="rotate(257)"/>
+    <use href="#b" transform="rotate(308.4)"/>
+    <circle r="18" fill="#0b0e14" stroke="#38bdf8" stroke-width="5"/>
+  </g>
+  <!-- temperature accent -->
+  <text x="128" y="214" text-anchor="middle" font-family="DejaVu Sans, sans-serif"
+        font-size="34" font-weight="bold" fill="#34d399">°C</text>
+</svg>

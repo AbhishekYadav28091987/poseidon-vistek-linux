@@ -1,0 +1,28 @@
+# --- proprietary vendor material (do NOT publish) ---
+extracted/
+*.Setup.zip
+RM-Hardware*.zip
+RM-Hardware*Setup*
+*.dll
+*.exe
+*.il
+*.cs
+*.sys
+
+# --- reverse-engineering scratch / dumps ---
+*.asm
+cap.txt
+headers.txt
+*.pcap
+
+# --- third-party build trees ---
+innoextract-src/
+
+# --- build / dist output ---
+build/
+dist/
+__pycache__/
+*.pyc
+
+# --- misc vendor docs ---
+*usermanual.pdf
