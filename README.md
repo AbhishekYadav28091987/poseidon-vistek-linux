@@ -28,16 +28,20 @@ Values are read from Linux sensors:
 
 ## Install
 
+Download the packages from the [**latest release**](https://github.com/AbhishekYadav28091987/poseidon-vistek-linux/releases/latest).
+
 ### Debian / Ubuntu / Mint / Pop!_OS (.deb)
 
 ```bash
-sudo apt install ./dist/vistek-display_1.0.0_all.deb
+wget https://github.com/AbhishekYadav28091987/poseidon-vistek-linux/releases/download/v1.0.0/vistek-display_1.0.0_all.deb
+sudo apt install ./vistek-display_1.0.0_all.deb
 ```
 
 ### Any other distro (tarball)
 
 ```bash
-tar xzf dist/vistek-display-1.0.0.tar.gz
+wget https://github.com/AbhishekYadav28091987/poseidon-vistek-linux/releases/download/v1.0.0/vistek-display-1.0.0.tar.gz
+tar xzf vistek-display-1.0.0.tar.gz
 cd vistek-display-1.0.0 && sudo ./install.sh
 ```
 
